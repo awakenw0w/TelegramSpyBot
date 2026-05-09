@@ -10,7 +10,7 @@ def build_start_keyboard() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(
                     text="🟢 Подключить",
-                    url="tg://settings",
+                    url="tg://settings/edit",
                 )
             ],
             [
