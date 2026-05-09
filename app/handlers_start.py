@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from html import escape
 
 from aiogram import F, Router
 from aiogram.filters import CommandStart
@@ -31,27 +30,23 @@ def _start_text(bot_username: str) -> str:
 
 
 def _demo_text(bot_username: str) -> str:
-    username = escape(bot_username.strip().lstrip("@"), quote=False)
+    username = bot_username.strip().lstrip("@")
     return (
-        "<b>Демонстрация работы бота.</b>\n\n"
+        "Демонстрация работы бота.\n\n"
         "Собеседник изменяет сообщение — бот присылает старый и новый текст.\n\n"
         "Пример:\n"
-        "<pre>"
         "Иван (@ivan123) изменил(а) сообщение:\n"
         "Старое сообщение:\n"
         "Привет\n\n"
         "Новое сообщение:\n"
         "Привет)\n\n"
-        f"@{username}"
-        "</pre>\n\n"
+        f"@{username}\n\n"
         "Собеседник удаляет сообщение — бот присылает сохранённый текст "
         "удалённого сообщения.\n\n"
         "Пример:\n"
-        "<pre>"
-        "Иван (@ivan123) удалил(а) сообщение:\n\n"
+        "Иван (@ivan123) удалил(а) сообщение:\n"
         "Как дела?\n\n"
-        f"@{username}"
-        "</pre>\n\n"
+        f"@{username}\n\n"
         "Бот работает даже когда вы оффлайн"
     )
 
@@ -83,4 +78,4 @@ async def handle_demo_callback(callback: CallbackQuery, config: Config) -> None:
     await callback.answer()
     if callback.message is None:
         return
-    await callback.message.answer(_demo_text(config.bot_username), parse_mode="HTML")
+    await callback.message.answer(_demo_text(config.bot_username))

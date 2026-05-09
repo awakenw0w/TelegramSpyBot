@@ -331,6 +331,6 @@ def _to_iso(value: datetime | None) -> str | None:
 
 async def _send_owner_notification(bot: Bot, owner_user_id: int, text: str) -> None:
     try:
-        await bot.send_message(chat_id=owner_user_id, text=text, parse_mode="HTML")
+        await bot.send_message(chat_id=owner_user_id, text=text)
     except Exception:
         logger.exception("Failed to send notification to owner_user_id=%s", owner_user_id)
