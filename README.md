@@ -1,36 +1,55 @@
-# Minimal Telegram Business Bot API tracker
+# ChatFlow — бот для уведомлений об изменённых и удалённых сообщениях
 
-Минимальный бот на Python, который работает только через официальный Telegram Bot API и функцию Telegram «Автоматизация чатов».
+ChatFlow помогает следить за важными изменениями в Telegram-переписке через официальную функцию Telegram «Автоматизация чатов».
 
-Бот сохраняет входящие `business_message` в SQLite, а затем уведомляет владельца, если сообщение было изменено через `edited_business_message` или удалено через `deleted_business_messages`.
+После подключения бот сохраняет входящие сообщения в SQLite. Если собеседник изменит или удалит сообщение, ChatFlow отправит владельцу уведомление с сохранённым текстом.
 
-## Что входит
+Готовая версия уже работает на сервере, её можно открыть и протестировать в Telegram: [@mychatflowbot](https://t.me/mychatflowbot).
+
+## Возможности
+
+- сохраняет текст входящих `business_message`;
+- сохраняет подписи к сообщениям, если текста нет;
+- уведомляет об изменённых сообщениях через `edited_business_message`;
+- уведомляет об удалённых сообщениях через `deleted_business_messages`;
+- показывает имя и username отправителя из сохранённого сообщения;
+- работает на официальном Telegram Bot API;
+- запускается одной командой: `python -m app.main`.
+
+## Технологии
 
 - Python 3.12+
 - aiogram 3.x
-- SQLite + aiosqlite
+- SQLite
+- aiosqlite
 - python-dotenv
 - logging
-- команда `/start`
-- стартовый экран с двумя inline-кнопками
-- сохранение текстов и captions входящих business-сообщений
-- уведомления об изменённых и удалённых сообщениях
 
-## Что не входит
+## Подготовка
 
-Бот не имеет архива, настроек, статуса, помощи, статистики, админ-панели, веб-панели, оплаты, аналитики, Telethon, Pyrogram и userbot.
-
-## Установка
+Создайте виртуальное окружение и установите зависимости:
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate
+```
+
+Windows:
+
+```powershell
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Linux:
+
+```bash
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ## Настройка
 
-Создайте `.env` по примеру `.env.example`:
+Скопируйте `.env.example` в `.env` и заполните переменные:
 
 ```env
 BOT_TOKEN=123456:token
@@ -40,17 +59,13 @@ CONNECT_BANNER_PATH=assets/connect_banner.png
 LOG_LEVEL=INFO
 ```
 
-`BOT_USERNAME` — username самого бота без `@`.
+`BOT_TOKEN` — токен бота от BotFather.
 
-Кнопка «🟢 Подключить» открывает настройки Telegram через `tg://settings`, чтобы каждый пользователь подключал бота в своём аккаунте.
+`BOT_USERNAME` — username бота без `@`.
 
-Если хотите картинку на стартовом экране, положите файл сюда:
+`DB_PATH` — путь к SQLite-базе.
 
-```text
-assets/connect_banner.png
-```
-
-Если файла нет, бот просто отправит текст и не упадёт.
+`CONNECT_BANNER_PATH` — путь к картинке для стартового экрана. Если файла нет, бот просто отправит текст.
 
 ## Запуск
 
@@ -58,19 +73,25 @@ assets/connect_banner.png
 python -m app.main
 ```
 
-При запуске бот создаёт папки `storage` и `assets`, SQLite-базу и таблицы, если их ещё нет, после чего запускает polling.
+При запуске ChatFlow создаёт папки `storage` и `assets`, подготавливает SQLite-базу и запускает polling.
 
-## Подключение через «Автоматизация чатов»
+## Подключение в Telegram
 
-1. Откройте бота и нажмите `/start`.
-2. Нажмите кнопку «🟢 Подключить».
-3. В открывшихся настройках нажмите «Редактировать профиль».
-4. Откройте «Автоматизация чатов».
-5. Добавьте бота по username: `@BOT_USERNAME`.
+1. Откройте бота в Telegram.
+2. Отправьте `/start`.
+3. Нажмите кнопку «🟢 Подключить».
+4. В настройках профиля откройте «Автоматизация чатов».
+5. Добавьте бота по username из `.env`.
 
-После подключения бот получает `business_connection`, сохраняет подключение и начинает обрабатывать `business_message`, `edited_business_message` и `deleted_business_messages`.
+После подключения бот начнёт получать события `business_message`, `edited_business_message` и `deleted_business_messages`.
 
-## Структура
+## Что важно знать
+
+ChatFlow не использует Telethon, Pyrogram и userbot. В проекте нет веб-панели, оплаты, аналитики и админ-панели.
+
+Секреты и локальные файлы не должны попадать в GitHub. Файл `.env`, SQLite-база, виртуальное окружение, логи и `__pycache__` добавлены в `.gitignore`.
+
+## Структура проекта
 
 ```text
 app/
@@ -82,9 +103,10 @@ app/
   handlers_start.py
   handlers_business.py
   formatters.py
-storage/
 assets/
+storage/
 .env.example
+.gitignore
 requirements.txt
 README.md
 ```
